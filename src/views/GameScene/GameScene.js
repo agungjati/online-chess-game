@@ -64,6 +64,9 @@ export default class Scene extends Component {
             showInventory: true,
             tax: 2,
             startTimeOfDay: 0,
+            walletAddress: '',
+            balance: '',
+            error: '',
         });
 
         this.getTax();
@@ -1898,6 +1901,28 @@ export default class Scene extends Component {
 
     /***************************************************************************************************************************/
 
+    connectToWallet = async () => {
+        
+        try {
+          if (!window.ethereum) {
+            throw new Error('MetaMask is not installed. Please install it to use this app.');
+          }
+    
+          await window.ethereum.request({ method: 'eth_requestAccounts' });
+          const provider = new ethers.providers.Web3Provider(window.ethereum);
+          const signer = provider.getSigner();
+          const walletAddress = await signer.getAddress();
+          const balanceInWei = await provider.getBalance(walletAddress);
+          const balanceInEther = ethers.utils.formatEther(balanceInWei);
+    
+          console.log('Wallet Connected !', walletAddress, balanceInEther);
+          this.setState({ walletAddress, balance: balanceInEther, error: '' });
+        } catch (error) {
+          console.error(error);
+          this.setState({ error: error.message });
+        }
+    }
+
     render() {
         return (
           <div className="GameScene">
@@ -1912,6 +1937,7 @@ export default class Scene extends Component {
                     showInventoryAction={ () => this.setState({ showInventory: !this.state.showInventory }) } 
                     quitAction={() => this.setState({ showConfirmModal: true })}
                     sendDrawRequest={ this.sendDrawRequest.bind(this) }
+                    connectToWallet={this.connectToWallet}
                 />
             </div>
 

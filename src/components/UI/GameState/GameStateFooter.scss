@@ -70,4 +70,18 @@
       }
     }
   }
+
+  .btn-connect-wallet{
+    position: absolute;
+    left: 7.5vw;
+    bottom: 1vw;
+    width: 60px;
+    height: 60px;
+    font-size: 0.7rem;
+    background: #fff;
+    border-radius: 50%;
+    line-height: 1;
+    padding: 1px;
+    cursor: pointer;
+  }
 }
